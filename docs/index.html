@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Access Request Queue: a Xano governed-approval template</title>
+    <meta
+      name="description"
+      content="The governed backend under an AI-built access-request tool: versioned rules, segregation of duties, API-layer RBAC, and an append-only audit trail, all in one Xano API layer."
+    />
+    <style>
+      :root {
+        --bg: #0a0a0c;
+        --panel: #141417;
+        --panel-2: #1a1a1f;
+        --border: rgba(255, 255, 255, 0.1);
+        --text: #ececee;
+        --muted: #a1a1aa;
+        --primary: #5b74f0;
+        --primary-fg: #ffffff;
+        --emerald: #34d399;
+        --amber: #f59e0b;
+        --red: #f87171;
+        --radius: 12px;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: inherit; }
+      .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+      header.site {
+        border-bottom: 1px solid var(--border);
+        background: rgba(20, 20, 23, 0.6);
+        backdrop-filter: blur(6px);
+      }
+      header.site .wrap { display: flex; align-items: center; gap: 12px; padding: 16px 24px; }
+      .logo {
+        width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
+        background: rgba(91, 116, 240, 0.15); color: var(--primary); flex: none;
+      }
+      .brand-name { font-weight: 650; }
+      .brand-sub { font-size: 12px; color: var(--muted); }
+      .tag {
+        margin-left: auto; font-size: 12px; color: var(--muted);
+        border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px;
+      }
+      .hero { padding: 64px 0 24px; }
+      .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+      .badge {
+        font-size: 12px; font-weight: 600; border-radius: 999px; padding: 4px 10px;
+        border: 1px solid var(--border);
+      }
+      .badge.play { color: #c7d2fe; background: rgba(91, 116, 240, 0.14); border-color: rgba(91, 116, 240, 0.35); }
+      .badge.vert { color: var(--muted); background: var(--panel); }
+      h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
+      .lede { font-size: clamp(16px, 2.2vw, 20px); color: var(--muted); max-width: 44ch; margin: 0 0 22px; }
+      .meta { font-size: 14px; color: var(--muted); margin: 0 0 24px; }
+      .meta strong { color: var(--text); font-weight: 600; }
+      .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+        font-weight: 600; font-size: 15px; padding: 11px 20px; border-radius: 10px;
+        border: 1px solid transparent; transition: all 0.15s ease;
+      }
+      .btn.primary { background: var(--primary); color: var(--primary-fg); }
+      .btn.primary:hover { background: #4a63e0; }
+      .btn.ghost { background: transparent; color: var(--text); border-color: var(--border); }
+      .btn.ghost:hover { background: var(--panel-2); }
+      .shot {
+        width: 100%; border-radius: var(--radius); border: 1px solid var(--border);
+        display: block; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+      }
+      section { padding: 40px 0; border-top: 1px solid var(--border); }
+      section:first-of-type { border-top: none; }
+      h2 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.01em; }
+      .sub { color: var(--muted); margin: 0 0 24px; max-width: 62ch; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+      .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+      .card h3 { margin: 0 0 6px; font-size: 16px; }
+      .card p { margin: 0; color: var(--muted); font-size: 14px; }
+      table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+      th { color: var(--muted); font-weight: 600; }
+      code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      td code { color: #c7d2fe; }
+      .method { font-weight: 700; color: var(--emerald); }
+      .method.post { color: var(--amber); }
+      pre {
+        background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 18px; overflow-x: auto; font-size: 13.5px; color: #d4d4d8; line-height: 1.55;
+      }
+      .note {
+        border: 1px solid rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.08);
+        border-radius: var(--radius); padding: 16px 18px; color: var(--muted); font-size: 14px;
+      }
+      .note strong { color: var(--amber); }
+      footer { border-top: 1px solid var(--border); padding: 28px 0; color: var(--muted); font-size: 13px; }
+      ul.plain { padding-left: 18px; margin: 0; color: var(--muted); }
+      ul.plain li { margin-bottom: 8px; }
+      ul.plain b { color: var(--text); }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap">
+        <div class="logo" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">Access Request Queue</div>
+          <div class="brand-sub">Governed approval backend</div>
+        </div>
+        <span class="tag">Xano template</span>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <div class="badges">
+          <span class="badge play">Play 3 · Pilot to Production</span>
+          <span class="badge vert">Identity &amp; access governance</span>
+        </div>
+        <h1>The rules live in the backend, not the frontend.</h1>
+        <p class="lede">
+          The governed backend under an AI-built internal access-request tool. Every approval is
+          routed by a versioned rule, checked against segregation of duties, and written to an audit
+          trail, all in one Xano API layer the frontend cannot go around.
+        </p>
+        <p class="meta">
+          <strong>5</strong> tables · <strong>10</strong> API endpoints · native API-layer RBAC ·
+          seed data, no external services
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="https://github.com/xano-scratch/access-request-queue">View on GitHub</a>
+          <a class="btn ghost" href="#use">Use this template</a>
+        </div>
+        <img class="shot" src="screenshot.png" alt="The governed request detail: the rule that fired, the guarded decision panel, and the append-only audit trail" />
+      </section>
+
+      <section>
+        <h2>What it demonstrates</h2>
+        <p class="sub">
+          A team builds an internal access-request tool fast (Bolt, Lovable, v0). Then someone has
+          to make it safe for production. These controls do not belong in the frontend, because a
+          rebuilt frontend would carry them off. They live in the Xano API layer instead.
+        </p>
+        <div class="grid">
+          <div class="card"><h3>API-layer RBAC</h3><p>Requester, approver, and security admin each see and can do different things. The role is checked on every endpoint. This is not row-level security.</p></div>
+          <div class="card"><h3>Segregation of duties</h3><p>You cannot approve your own request. The backend refuses it, no matter which client asks.</p></div>
+          <div class="card"><h3>Approval thresholds</h3><p>An approver signs off only up to their limit. A request above it is forced to an escalation.</p></div>
+          <div class="card"><h3>Versioned rules</h3><p>One active rule per system and tier. Superseded versions are kept, so the history stays visible.</p></div>
+          <div class="card"><h3>Append-only audit trail</h3><p>Every decision is recorded with its actor and time. Rows are only ever inserted.</p></div>
+          <div class="card"><h3>Auto-expiry</h3><p>Granted access expires after a set number of days, swept by a backend endpoint.</p></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>API surface</h2>
+        <p class="sub">Ten endpoints under the pinned <code>api:access</code> group. Each guard is a precondition in the backend.</p>
+        <table>
+          <thead><tr><th>Method</th><th>Path</th><th>What it enforces</th></tr></thead>
+          <tbody>
+            <tr><td class="method post">POST</td><td><code>/api:access/login</code></td><td>Checks the password against the users auth table and mints a token</td></tr>
+            <tr><td class="method post">POST</td><td><code>/api:access/requests</code></td><td>Submits a request, routes it through the active rule, captures which rule fired</td></tr>
+            <tr><td class="method">GET</td><td><code>/api:access/requests</code></td><td>Lists the queue, scoped to the caller's role in the backend</td></tr>
+            <tr><td class="method">GET</td><td><code>/api:access/requests/{id}</code></td><td>One request with its system, requester, rule, and audit trail</td></tr>
+            <tr><td class="method post">POST</td><td><code>/api:access/requests/{id}/decide</code></td><td>Approve, deny, or escalate under the role, self-approval, and threshold guards</td></tr>
+            <tr><td class="method post">POST</td><td><code>/api:access/expire-sweep</code></td><td>Expires access past its window and audits it (security admin only)</td></tr>
+            <tr><td class="method">GET</td><td><code>/api:access/rules</code></td><td>Every rule, active and superseded (the versioning)</td></tr>
+            <tr><td class="method post">POST</td><td><code>/api:access/seed</code></td><td>Resets and reseeds the demo data</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>The screens</h2>
+        <div class="grid">
+          <div class="card"><h3>Role sign-in</h3><p>One click to sign in as each seeded role, so the RBAC story is obvious.</p></div>
+          <div class="card"><h3>Queue</h3><p>The request list scoped to your role, with a submit form that shows routing live.</p></div>
+          <div class="card"><h3>Request detail</h3><p>The rule that fired, the guarded decision panel, and the append-only trail.</p></div>
+          <div class="card"><h3>Rules</h3><p>Active and superseded rules per system and tier, plus the admin expiry sweep.</p></div>
+        </div>
+      </section>
+
+      <section id="use">
+        <h2>Use this template</h2>
+        <p class="sub">
+          Clone it and deploy your own live copy in about a minute. Paste this to a coding agent, or
+          run the commands yourself.
+        </p>
+        <pre><code>Start a new app from this Xano template:
+https://github.com/xano-scratch/access-request-queue
+
+Clone it, run: npm install
+then: npx xanots login
+then: npm run xano:deploy   (builds the frontend, deploys, prints the live URL)
+
+Open the URL, click "Load demo data", and sign in with any account
+(password: password123). Then adapt the tables and endpoints in xano/
+to your own domain.</code></pre>
+        <div class="note">
+          <strong>About the live links.</strong> The demo runs on a throwaway Xano environment that
+          expires. Links from a past run stop serving. The durable artifact is this repo: anyone can
+          clone it and run <code>npm run xano:deploy</code> for fresh live links. It is a demo on
+          seed data, not a production system.
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        Built with Xano and <code>@xanots/sdk</code>. MIT licensed. One governed API layer a
+        reviewer can read and trust.
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "objects": {
+    "app:access": {
+      "guid": "1eba5e7eb94f2ac9767a821241e63216",
+      "canonical": "access",
+      "canonical_source": "code"
+    },
+    "dbo:access_requests": {
+      "guid": "8903df747b3f518edf50c239817ab43f"
+    },
+    "dbo:approval_rules": {
+      "guid": "771ff4ea46b6aba28ba7f44414e9ee1d"
+    },
+    "dbo:approvals": {
+      "guid": "1c66d41953b6f89434885ab1073224a0"
+    },
+    "dbo:systems": {
+      "guid": "e11821f7fc3c27208bb3d3c1cc227fbd"
+    },
+    "dbo:users": {
+      "guid": "157d4a98d979cf04b9ccdb98dfc15229"
+    },
+    "query:access|GET|people": {
+      "guid": "2d5eb532dfcd29f300a9ca6689b480bb"
+    },
+    "query:access|GET|requests": {
+      "guid": "5d98d7abb4d11ec2599c7da2b1ab2e4f"
+    },
+    "query:access|GET|requests/{id}": {
+      "guid": "ce3021efd2e05dc806adc6fb4cc7c977"
+    },
+    "query:access|GET|rules": {
+      "guid": "9f17ce9365255a958c1dd8d72fa3f68a"
+    },
+    "query:access|GET|systems": {
+      "guid": "ee57f0972a31d443a983461889e46d61"
+    },
+    "query:access|POST|expire-sweep": {
+      "guid": "7f285c886fa15657c1791f0b04d63dcc"
+    },
+    "query:access|POST|login": {
+      "guid": "71c1403cc225938fcf0b410718db8c6f"
+    },
+    "query:access|POST|requests": {
+      "guid": "366ffac955ce885ddefe92c94a55daca"
+    },
+    "query:access|POST|requests/{id}/decide": {
+      "guid": "2c16d1f2a731c37a771e561bb70ed84c"
+    },
+    "query:access|POST|seed": {
+      "guid": "259b025279b07ab589020dfb51e025f8"
+    }
+  }
+}
